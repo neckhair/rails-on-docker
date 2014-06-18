@@ -1,0 +1,5 @@
+web:
+  build: .
+  command: bundle exec unicorn_rails
+  ports:
+    - "8080:8080"

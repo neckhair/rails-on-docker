@@ -10,10 +10,10 @@ default: &default
   timeout: 5000
   username: admin
   password: "<%= ENV['DB_ENV_MYSQL_PASS'] %>"
+  host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
 
 development:
   <<: *default
-  host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
   database: beer
 
 # Warning: The database defined as "test" will be erased and

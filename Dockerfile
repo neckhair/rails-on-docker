@@ -1,8 +1,7 @@
 FROM ubuntu:trusty
 
-RUN apt-get update
-RUN apt-get install -qy curl nodejs
-RUN apt-get install -qy libmysqlclient-dev
+RUN apt-get update && \
+    apt-get install -qy curl nodejs libmysqlclient-dev
 
 RUN curl -sSL https://get.rvm.io | bash -s stable
 RUN /bin/bash -l -c "rvm requirements"

@@ -5,5 +5,15 @@
   <%= @brand.name %>
 </p>
 
+<p>
+  <strong>Time to brew per bottle:</strong>
+  <%= @brand.time_to_brew %> seconds
+</p>
+
+<p>
+  <strong>In store:</strong>
+  <%= @brand.in_store %>
+</p>
+
 <%= link_to 'Edit', edit_brand_path(@brand) %> |
 <%= link_to 'Back', brands_path %>

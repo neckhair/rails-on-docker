@@ -1,0 +1,29 @@
+.large-4.columns
+  %ul.pricing-table{ 'data-equalizer-watch' => '' }
+    %li.price
+      = brand.name
+    %li.bullet-item
+      = brand.in_store
+      %br/
+      Bottles in store
+    %li.bullet-item
+      = brand.time_to_brew
+      %br/
+      Seconds to brew per bottle
+    %li.cta-button
+      = link_to 'Brew now!', '#', class: 'button', data: { 'reveal-id' => dom_id(brand, :brew_modal) }
+    %li.cta-button
+      = link_to 'Show', brand, class: 'tiny button'
+      = link_to 'Edit', edit_brand_path(brand), class: 'tiny button'
+      = link_to 'Destroy', brand, method: :delete, class: 'tiny alert button'
+
+  .reveal-modal[brand, :brew_modal]{"data-reveal" => ""}
+    %h2 Brew some bottles of #{brand.name}
+
+    %p.lead Tell me how much you want to brew:
+
+    = form_for(brand, url: brand_brew_path(brand)) do |f|
+      %input{ type: 'number', name: 'bottles', value: 50 }
+      = f.submit 'Start brewing!', class: 'button'
+
+    %a.close-reveal-modal &#215;

@@ -61,6 +61,17 @@ class BrandsController < ApplicationController
     end
   end
 
+  def brew
+    @brand = Brand.find(params[:brand_id])
+    @brand.in_store = @brand.in_store + params[:bottles].to_i
+
+    if @brand.save
+      flash[:notice] = "Brewing #{params[:bottles]} bottles of #{@brand.name}."
+    end
+
+    redirect_to :back
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_brand

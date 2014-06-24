@@ -1,0 +1,7 @@
+%h1 Brew Log
+
+- @brew_logs.each do |log|
+  %p
+    %strong= l log.created_at, format: :short
+    %br/
+    Brewed #{log.count} bottles of #{link_to log.brand_name, log.brand}. This took #{log.time} Seconds.

@@ -23,7 +23,7 @@
     %p.lead Tell me how much you want to brew:
 
     = form_for(brand, url: brand_brew_path(brand)) do |f|
-      %input{ type: 'number', name: 'bottles', value: 50 }
+      %input{ type: 'number', name: 'bottles', value: 10 }
       = f.submit 'Start brewing!', class: 'button'
 
     %a.close-reveal-modal &#215;

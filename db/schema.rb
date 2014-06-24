@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140624131620) do
+ActiveRecord::Schema.define(version: 20140624145910) do
 
   create_table "brands", force: true do |t|
     t.string   "name"
@@ -20,5 +20,15 @@ ActiveRecord::Schema.define(version: 20140624131620) do
     t.integer  "time_to_brew", default: 10
     t.integer  "in_store",     default: 0
   end
+
+  create_table "brew_logs", force: true do |t|
+    t.integer  "brand_id"
+    t.integer  "count"
+    t.integer  "time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "brew_logs", ["brand_id"], name: "index_brew_logs_on_brand_id"
 
 end

@@ -18,8 +18,15 @@
           %a{href: "#"}
             %span Menu
       %section.top-bar-section
+        %ul.right
+          %li.active
+            = link_to '#' do
+              %strong= Sidekiq::Workers.new.size
+              batches in progress
+
         %ul.left
-          %li.active= link_to 'Inventory', brands_path
+          %li= link_to 'Inventory', brands_path
+          %li= link_to 'Log', brew_logs_path
     %section.row
       .large-12.columns
         - flash.each do |name, msg|

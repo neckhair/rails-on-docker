@@ -62,12 +62,10 @@ class BrandsController < ApplicationController
   end
 
   def brew
-    @brand = Brand.find(params[:brand_id])
-    @brand.in_store = @brand.in_store + params[:bottles].to_i
+    @brand = Brand.find params[:brand_id]
 
-    if @brand.save
-      flash[:notice] = "Brewing #{params[:bottles]} bottles of #{@brand.name}."
-    end
+    BrewWorker.perform_async @brand.id, params[:bottles].to_i
+    flash[:notice] = "Brewing #{params[:bottles]} bottles of #{@brand.name}."
 
     redirect_to :back
   end

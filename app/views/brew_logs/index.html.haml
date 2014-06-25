@@ -4,4 +4,4 @@
   %p
     %strong= l log.created_at, format: :short
     %br/
-    Brewed #{log.count} bottles of #{link_to log.brand_name, log.brand}. This took #{log.time} Seconds.
+    Brewed #{log.count} bottles of #{link_to log.brand_name, log.brand}. This took #{distance_of_time_in_words_to_now log.time.ago, include_seconds: true}.

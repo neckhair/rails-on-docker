@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM phusion/baseimage:0.9.11
 
 RUN apt-get update && \
     apt-get install -qy curl nodejs libmysqlclient-dev

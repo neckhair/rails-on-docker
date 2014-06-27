@@ -13,7 +13,7 @@ there is much room for improvement.
   * [ ] MySQL Slave for backups
   * [ ] Nginx as load balancer
   * [ ] Redis as session store and for caching
-  * [ ] Sidekiq container for background jobs
+  * [x] Sidekiq container for background jobs
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis
@@ -29,16 +29,20 @@ Actually I only forward the port 8080 on the host to the guest's port 80 (nginx)
 
     docker run -d -p 3306:3306 --name db1 -e MYSQL_PASS=mypass tutum/mysql
 
+## Redis Container REDIS1
+
+    docker run --name redis1 -d redis
+
 ## Rails Container APP1
 
     docker build -t neckhair/rails .
 
-    docker run -e RAILS_ENV=production --link db1:db neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
+    docker run -e RAILS_ENV=production --link db1:db --link redis1:redis neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
 
-    docker run -e RAILS_ENV=production --link db1:db neckhair/rails /bin/bash -l -c "bundle exec rake assets:precompile"
+    docker run -e RAILS_ENV=production --link db1:db --link redis1:redis neckhair/rails /bin/bash -l -c "bundle exec rake assets:precompile"
     docker commit $(docker ps -l -q) neckhair/rails
 
-    docker run -d -e SECRET_KEY_BASE=$(rake secret) -p 80:80 --name app1 --link db1:db neckhair/rails /usr/bin/start-server
+    docker run -d -e SECRET_KEY_BASE=abcdefg -p 80:80 --name app1 --link db1:db --link redis1:redis neckhair/rails /usr/bin/start-server
 
 The app now listens on port 80 and I can reach it when I point my browser to http://localhost:8080. (Because of some
   port forwarding I did.)
@@ -46,5 +50,9 @@ The app now listens on port 80 and I can reach it when I point my browser to htt
 Stuff to figure out:
 
   * Better handling of the mysql password
-  * Where to store the secret key base?
+  * Where to store the secret key?
   * Script these steps with capistrano
+
+## Sidekiq Container WORKER1
+
+    docker run -d -e SECRET_KEY_BASE=abcdefg --name worker1 --link db1:db --link redis1:redis neckhair/rails /usr/bin/start-sidekiq

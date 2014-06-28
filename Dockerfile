@@ -22,5 +22,5 @@ WORKDIR /rails
 
 RUN /bin/bash -l -c "bundle install --without development test"
 
-# Publish port 80
-EXPOSE 80
+# Publish port 8080
+EXPOSE 8080

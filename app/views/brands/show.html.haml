@@ -1,0 +1,15 @@
+- cache [@brand, :show] do
+  %p#notice= notice
+  %p
+    %strong Name:
+    = @brand.name
+  %p
+    %strong Time to brew per bottle:
+    = @brand.time_to_brew
+    seconds
+  %p
+    %strong In store:
+    = @brand.in_store
+  = link_to 'Edit', edit_brand_path(@brand)
+  |
+  \#{link_to 'Back', brands_path}

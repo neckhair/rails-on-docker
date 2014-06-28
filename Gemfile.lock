@@ -44,6 +44,7 @@ GEM
     coffee-script-source (1.7.0)
     columnize (0.8.9)
     connection_pool (2.0.0)
+    dalli (2.7.2)
     debugger-linecache (1.2.0)
     erubis (2.7.0)
     execjs (2.2.0)
@@ -159,6 +160,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 4.0.0)
+  dalli
   foundation-rails
   haml-rails
   jbuilder (~> 2.0)

@@ -11,7 +11,7 @@ there is much room for improvement.
   * [x] MySQL container
   * [x] Rails container using Unicorn
   * [x] Nginx as load balancer/reverse proxy
-  * [ ] Redis as session store and for caching
+  * [x] Memcached for caching
   * [x] Sidekiq container for background jobs
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
@@ -35,16 +35,23 @@ Actually I only forward the port 8080 on the host to the guest's port 80 (nginx)
 
     docker run -d --name redis1 redis
 
+## Memcached Container CACHE1
+
+    docker build -t neckhair/memcached config/container/memcached
+    docker run -d --name cache1 neckhair/memcached
+
 ## Rails Container APP1
 
     docker build -t neckhair/rails .
 
-    docker run -t -e RAILS_ENV=production --link db1:db --link redis1:redis neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
-
-    docker run -t -e RAILS_ENV=production --link db1:db --link redis1:redis neckhair/rails /bin/bash -l -c "bundle exec rake assets:precompile"
+    docker run -t --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake assets:precompile"
     docker commit $(docker ps -l -q) neckhair/rails
 
-    docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link db1:db --link redis1:redis neckhair/rails /usr/bin/start-server
+    docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /usr/bin/start-server
+
+If you're running this the first time you might need to setup the database right after building the rails container:
+
+    docker run -t -e RAILS_ENV=production --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
 
 Stuff to figure out:
 

@@ -31,5 +31,8 @@ WORKDIR /rails
 
 RUN bundle exec rake assets:precompile
 
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Publish port 8080
 EXPOSE 8080

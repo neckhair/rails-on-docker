@@ -22,18 +22,20 @@ there is much room for improvement.
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
-I'm running this on a Mac using the famous `boot2docker` command line
-tool. For its Virtual Box image I set up some port forwarding. You can
-do this on the command line or within the Virtual Box GUI.
-Actually I only forward the port 8080 on the host to the guest's port 80 (nginx).
+I am running this on a Mac using the [boot2docker](http://boot2docker.io) command line
+tool. For its Virtual Box image I set up some port forwarding:
+
+    VBoxManage modifyvm "boot2docker-vm" --natpf1 "web,tcp,127.0.0.1,8080,,80"
+
+With this little trick you can reach port 80 in the container via port 8080 on
+your host. So later when I tell you to navigate to the website this means
+you point your browser to http://localhost:8080.
 
 ## Quick Start
 
 Just run the following command if you want to get up and running quickly:
 
-```shell
-bin/bootstrap.sh
-```
+    bin/bootstrap.sh
 
 All containers should now be running und you should be able to navigate your browser to the page
 (`http://localhost:8080`). All steps are described bellow.
@@ -76,4 +78,3 @@ Stuff to figure out:
     docker run -d -p 80:80 --link app1:app1 --name web1 neckhair/nginx
 
 Nginx now listens on port 80 on the Docker host. Requests are passed to one of the two app servers.
-

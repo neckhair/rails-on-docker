@@ -23,6 +23,10 @@
             = link_to '#' do
               %strong= Sidekiq::Workers.new.size
               batches in progress
+          %li.active
+            = link_to '#' do
+              Host:
+              = `hostname`.strip
 
         %ul.left
           %li= link_to 'Inventory', brands_path

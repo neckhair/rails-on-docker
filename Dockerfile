@@ -21,6 +21,7 @@ ADD ./ /rails
 WORKDIR /rails
 
 RUN /bin/bash -l -c "bundle install --without development test"
+RUN /bin/bash -l -c "bundle exec rake assets:precompile"
 
 # Publish port 8080
 EXPOSE 8080

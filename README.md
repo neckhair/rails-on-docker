@@ -13,19 +13,30 @@ there is much room for improvement.
   * [x] Nginx as load balancer/reverse proxy
   * [x] Memcached for caching
   * [x] Sidekiq container for background jobs
+  * [ ] Use Brightbox Ruby Packages instead of RVM
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis
   * [ ] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
   * [ ] MySQL Slave for backups
-  * [ ] Disable `serve_static_assets` and let nginx serve assets
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
 I'm running this on a Mac using the famous `boot2docker` command line
 tool. For its Virtual Box image I set up some port forwarding. You can
-to this on the command line or within the Virtual Box GUI.
+do this on the command line or within the Virtual Box GUI.
 Actually I only forward the port 8080 on the host to the guest's port 80 (nginx).
+
+## Quick Start
+
+Just run the following command if you want to get up and running quickly:
+
+```shell
+bin/bootstrap.sh
+```
+
+All containers should now be running und you should be able to navigate your browser to the page
+(`http://localhost:8080`). All steps are described bellow.
 
 ## Database Container DB1
 
@@ -43,10 +54,6 @@ Actually I only forward the port 8080 on the host to the guest's port 80 (nginx)
 ## Rails Container APP1
 
     docker build -t neckhair/rails .
-
-    docker run -t --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake assets:precompile"
-    docker commit $(docker ps -l -q) neckhair/rails
-
     docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /usr/bin/start-server
 
 If you're running this the first time you might need to setup the database right after building the rails container:
@@ -68,8 +75,5 @@ Stuff to figure out:
     docker build -t neckhair/nginx config/container/nginx
     docker run -d -p 80:80 --link app1:app1 --name web1 neckhair/nginx
 
-Nginx now listens on port 80 on the Docker host.
+Nginx now listens on port 80 on the Docker host. Requests are passed to one of the two app servers.
 
-Stuff to figure out:
-
-  * How to better build the upstream block in `nginx.conf`? It's very static now and only allows 1 app server.

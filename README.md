@@ -13,7 +13,7 @@ there is much room for improvement.
   * [x] Nginx as load balancer/reverse proxy
   * [x] Memcached for caching
   * [x] Sidekiq container for background jobs
-  * [ ] Use Brightbox Ruby Packages instead of RVM
+  * [x] Use Brightbox Ruby Packages instead of RVM
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis

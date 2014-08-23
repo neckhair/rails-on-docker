@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.11
+FROM ubuntu:trusty
 
 RUN apt-get -qq update && apt-get install -y memcached
 

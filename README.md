@@ -42,7 +42,8 @@ All containers should now be running und you should be able to navigate your bro
 
 ## Database Container DB1
 
-    docker run -d --name db1 -p 3306:3306 -e MYSQL_PASS=mypass tutum/mysql
+    docker build -t neckhair/mysql config/container/mysql
+    docker run -d --name db1 -p 3306:3306 -v /data/mysql:/var/lib/mysql -e MYSQL_PASS=mypass tutum/mysql
 
 ## Redis Container REDIS1
 
@@ -60,7 +61,7 @@ All containers should now be running und you should be able to navigate your bro
 
 If you're running this the first time you might need to setup the database right after building the rails container:
 
-    docker run -t -e RAILS_ENV=production --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
+    docker run -t -e RAILS_ENV=production --rm --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
 
 Stuff to figure out:
 

@@ -14,6 +14,6 @@ production:
   pool: 5
   timeout: 5000
   username: admin
-  password: "<%= ENV['DB_ENV_MYSQL_PASS'] %>"
-  host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
+  password: mypass
+  host: 'db1.mysql.dev.docker'
   database: beer_production

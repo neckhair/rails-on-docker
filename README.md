@@ -14,6 +14,7 @@ there is much room for improvement.
   * [x] Memcached for caching
   * [x] Sidekiq container for background jobs
   * [x] Use Brightbox Ruby Packages instead of RVM
+  * [x] Service discovery to avoid `--link`s
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis
@@ -22,23 +23,38 @@ there is much room for improvement.
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
-I am running this on a Mac using the [boot2docker](http://boot2docker.io) command line
-tool. For its Virtual Box image I set up some port forwarding:
+I am running this on a Mac using the [boot2docker](http://boot2docker.io) command line tool.
 
-    VBoxManage modifyvm "boot2docker-vm" --natpf1 "web,tcp,127.0.0.1,8080,,80"
+Boot2docker exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you its IP when
+you run `boot2docker ip`. To make reaching the vm more comfortable I made an entry in my `/etc/hosts`:
 
-With this little trick you can reach port 80 in the container via port 8080 on
-your host. So later when I tell you to navigate to the website this means
-you point your browser to http://localhost:8080.
+    192.168.59.103   dockerhost
+
+All services within the boot2docker VM are now reachable via dockerhost:<port> from my OS X command line.
 
 ## Quick Start
 
-Just run the following command if you want to get up and running quickly:
+We are going to run our own DNS service in one of the containers. So first we have to tell docker to make some changes
+to each container's `/etc/resolv.conf`. Enter boot2docker via ssh and change the file `/var/lib/boot2docker/profile` as
+follows:
 
+    EXTRA_ARGS="--bip=172.17.42.1/16 --dns=172.17.42.1"
+
+You can read more about this [here](https://github.com/crosbymichael/skydock).
+
+Now exit boot2docker and run the following commands:
+
+    boot2docker restart
     bin/bootstrap.sh
 
-All containers should now be running und you should be able to navigate your browser to the page
-(`http://localhost:8080`). All steps are described bellow.
+All containers should now be running and you should be able to navigate your browser to the page
+[http://dockerhost](http://dockerhost). All steps are described bellow.
+
+## DNS Containers
+
+    docker run -d -p 172.17.42.1:53:53/udp --name skydns crosbymichael/skydns -nameserver 8.8.8.8:53 -domain docker
+    docker run -d -v /var/run/docker.sock:/docker.sock --name skydock crosbymichael/skydock \
+               -ttl 30 -environment dev -s /docker.sock -domain docker -name skydns
 
 ## Database Container DB1
 
@@ -57,11 +73,11 @@ All containers should now be running und you should be able to navigate your bro
 ## Rails Container APP1
 
     docker build -t neckhair/rails .
-    docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /usr/bin/start-server
+    docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link redis1:redis --link cache1:cache neckhair/rails /usr/bin/start-server
 
 If you're running this the first time you might need to setup the database right after building the rails container:
 
-    docker run -t -e RAILS_ENV=production --rm --link db1:db --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
+    docker run -t -e RAILS_ENV=production --rm --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
 
 Stuff to figure out:
 

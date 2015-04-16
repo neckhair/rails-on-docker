@@ -11,12 +11,6 @@ RUN apt-get install -qy curl nodejs libmysqlclient-dev libsqlite3-dev build-esse
                         ruby2.1 ruby2.1-dev
 RUN gem install bundler --no-ri --no-rdoc
 
-ADD config/container/start-server.sh /usr/bin/start-server
-RUN chmod +x /usr/bin/start-server
-
-ADD config/container/start-sidekiq.sh /usr/bin/start-sidekiq
-RUN chmod +x /usr/bin/start-sidekiq
-
 # Cache bundle install
 WORKDIR /tmp
 ADD Gemfile Gemfile
@@ -36,5 +30,3 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Publish port 8080
 EXPOSE 8080
-
-CMD "/usr/bin/start-server"

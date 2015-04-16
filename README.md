@@ -14,84 +14,46 @@ there is much room for improvement.
   * [x] Memcached for caching
   * [x] Sidekiq container for background jobs
   * [x] Use Brightbox Ruby Packages instead of RVM
-  * [x] Service discovery to avoid `--link`s
+  * [x] Using Docker Compose for orchestration
+  * [ ] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis
-  * [ ] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
   * [ ] MySQL Slave for backups
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
 I am running this on a Mac using the [boot2docker](http://boot2docker.io) command line tool.
 
-Boot2docker exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you its IP when
-you run `boot2docker ip`. To make reaching the vm more comfortable I made an entry in my `/etc/hosts`:
+Boot2docker exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you its
+IP when you run `boot2docker ip`. To make reaching the vm more comfortable and to use the virtual host feature
+I made an entry in my `/etc/hosts`:
 
-    192.168.59.103   dockerhost
+    192.168.59.103   beer.docker
 
-All services within the boot2docker VM are now reachable via dockerhost:<port> from my OS X command line.
+All services within the boot2docker VM are now reachable via beer.docker:<port> from my OS X command line.
 
 ## Quick Start
 
-We are going to run our own DNS service in one of the containers. So first we have to tell docker to make some changes
-to each container's `/etc/resolv.conf`. Enter boot2docker via ssh and change the file `/var/lib/boot2docker/profile` as
-follows:
+First install boot2docker and the Docker command line tools. How this is done is very well documented
+all over the internet. Then start that whole stuff:
 
-    EXTRA_ARGS="--bip=172.17.42.1/16 --dns=172.17.42.1"
-
-You can read more about this [here](https://github.com/crosbymichael/skydock).
-
-Now exit boot2docker and run the following commands:
-
-    boot2docker restart
-    bin/bootstrap.sh
+    boot2docker up
+    $(boot2docker shellinit)
+    docker-compose run web bundle exec rake db:setup
+    docker-compose up
 
 All containers should now be running and you should be able to navigate your browser to the page
-[http://dockerhost](http://dockerhost). All steps are described bellow.
+[http://beer.docker](http://beer.docker).
 
-## DNS Containers
+## How it works
 
-    docker run -d -p 172.17.42.1:53:53/udp --name skydns crosbymichael/skydns -nameserver 8.8.8.8:53 -domain docker
-    docker run -d -v /var/run/docker.sock:/docker.sock --name skydock crosbymichael/skydock \
-               -ttl 30 -environment dev -s /docker.sock -domain docker -name skydns
+All containers are managed by docker-compose. You can see the configuration in the `docker-compose.yml`
+file.
 
-## Database Container DB1
+The nginx proxy container contains the docker-gen service. This listens for new and stopped containers.
+As soon as a container with a `VIRTUAL_HOST` environment variable starts, it re-creates the nginx config file
+and reloads nginx.
 
-    docker build -t neckhair/mysql config/container/mysql
-    docker run -d --name db1 -p 3306:3306 -v /data/mysql:/var/lib/mysql -e MYSQL_PASS=mypass tutum/mysql
-
-## Redis Container REDIS1
-
-    docker run -d --name redis1 redis
-
-## Memcached Container CACHE1
-
-    docker build -t neckhair/memcached config/container/memcached
-    docker run -d --name cache1 neckhair/memcached
-
-## Rails Container APP1
-
-    docker build -t neckhair/rails .
-    docker run -d -e SECRET_KEY_BASE=abcdefg --name app1 --link redis1:redis --link cache1:cache neckhair/rails /usr/bin/start-server
-
-If you're running this the first time you might need to setup the database right after building the rails container:
-
-    docker run -t -e RAILS_ENV=production --rm --link redis1:redis --link cache1:cache neckhair/rails /bin/bash -l -c "bundle exec rake db:setup"
-
-Stuff to figure out:
-
-  * Better handling of the mysql password
-  * Where to store the secret key?
-  * Script these steps with capistrano
-
-## Sidekiq Container WORKER1
-
-    docker run -d -e SECRET_KEY_BASE=abcdefg --name worker1 --link db1:db --link redis1:redis neckhair/rails /usr/bin/start-sidekiq
-
-## Nginx Container WEB1
-
-    docker build -t neckhair/nginx config/container/nginx
-    docker run -d -p 80:80 --link app1:app1 --name web1 neckhair/nginx
-
-Nginx now listens on port 80 on the Docker host. Requests are passed to one of the two app servers.
+Scaling up the app is as easy as running `docker-compose scale web=4`. Now you have 4 running web containers.
+The nginx proxy service acts as a load balancer in front of them.

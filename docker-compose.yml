@@ -1,0 +1,36 @@
+proxy:
+  image: jwilder/nginx-proxy:latest
+  ports:
+    - "80:80"
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+db:
+  image: mysql:5.7.7
+  environment:
+    MYSQL_ROOT_PASSWORD: mypass
+  ports:
+    - "3306:3306"
+redis:
+  image: redis
+cache:
+  build: config/container/memcached
+web:
+  build: .
+  environment:
+    SECRET_KEY_BASE: abcdefg
+    VIRTUAL_HOST: beer.docker
+    RAILS_ENV: production
+  links:
+    - db
+    - redis
+    - cache
+worker:
+  build: .
+  command: "/usr/bin/start-sidekiq"
+  environment:
+    SECRET_KEY_BASE: abcdefg
+    RAILS_ENV: production
+  links:
+    - db
+    - redis
+    - cache

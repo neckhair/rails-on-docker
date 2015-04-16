@@ -53,7 +53,7 @@ Rails.application.configure do
   config.logger = Logger.new(STDOUT)
 
   # Use a different cache store in production.
-  config.cache_store = :dalli_store, 'memcached.dev.docker'
+  config.cache_store = :dalli_store, 'cache'
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"

@@ -21,6 +21,7 @@ cache:
   image: memcached
 web:
   build: .
+  command: bundle exec unicorn -E production -c config/unicorn.rb
   environment:
     SECRET_KEY_BASE: abcdefg
     VIRTUAL_HOST: beer.docker
@@ -31,7 +32,7 @@ web:
     - cache
 worker:
   build: .
-  command: "/usr/bin/start-sidekiq"
+  command: bundle exec sidekiq -e production -c 25
   environment:
     SECRET_KEY_BASE: abcdefg
     RAILS_ENV: production

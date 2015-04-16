@@ -15,7 +15,7 @@ there is much room for improvement.
   * [x] Sidekiq container for background jobs
   * [x] Use Brightbox Ruby Packages instead of RVM
   * [x] Using Docker Compose for orchestration
-  * [ ] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
+  * [x] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis

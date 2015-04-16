@@ -18,7 +18,7 @@ dbdata:
 redis:
   image: redis
 cache:
-  build: config/container/memcached
+  image: memcached
 web:
   build: .
   environment:

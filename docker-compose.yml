@@ -26,17 +26,27 @@ web:
     SECRET_KEY_BASE: abcdefg
     VIRTUAL_HOST: beer.docker
     RAILS_ENV: production
+    LOGSTASH_URI: tcp://elk:5000
   links:
     - db
     - redis
     - cache
+    - elk
 worker:
   build: .
   command: bundle exec sidekiq -e production -c 25
   environment:
     SECRET_KEY_BASE: abcdefg
     RAILS_ENV: production
+    LOGSTASH_URI: tcp://elk:5000
   links:
     - db
     - redis
     - cache
+    - elk
+elk:
+  image: sebp/elk
+  ports:
+    - "5601:5601"
+    - "9200:9200"
+    - "5000:5000"

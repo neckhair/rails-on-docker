@@ -23,23 +23,23 @@ there is much room for improvement.
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
-I am running this on a Mac using the [boot2docker](http://boot2docker.io) command line tool.
+I am running this on a Mac using [docker-machine](https://docs.docker.com/machine/).
 
-Boot2docker exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you its
-IP when you run `boot2docker ip`. To make reaching the vm more comfortable and to use the virtual host feature
-I made an entry in my `/etc/hosts`:
+Docker-Machine exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you
+its IP when you run `docker-machine env dev`. To make reaching the vm more comfortable and to use the virtual
+host feature I made an entry in my `/etc/hosts`:
 
-    192.168.59.103   beer.docker
+    192.168.99.100   beer.docker
 
-All services within the boot2docker VM are now reachable via beer.docker:<port> from my OS X command line.
+All services within the docker-machine VM are now reachable via beer.docker:<port> from my OS X command line.
 
 ## Quick Start
 
-First install boot2docker and the Docker command line tools. How this is done is very well documented
+First install docker-machine and the Docker command line tools. How this is done is very well documented
 all over the internet. Then start that whole stuff:
 
-    boot2docker up
-    $(boot2docker shellinit)
+    docker-machine start dev
+    eval "$(docker-machine env dev)"
     docker-compose run web bundle exec rake db:setup
     docker-compose up
 

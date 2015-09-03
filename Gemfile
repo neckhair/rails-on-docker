@@ -10,6 +10,8 @@ gem 'sidekiq', '~> 3.1.4'
 
 gem 'dalli'
 
+gem 'lograge'
+
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'

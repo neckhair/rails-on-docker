@@ -40,3 +40,7 @@ worker:
     - db
     - redis
     - cache
+fluentd:
+  image: kiyoto/docker-fluentd
+  volumes:
+    - "/var/lib/docker/containers:/var/lib/docker/containers"

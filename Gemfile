@@ -9,6 +9,7 @@ gem 'sqlite3'
 gem 'sidekiq', '~> 3.1.4'
 
 gem 'dalli'
+gem 'logstash-logger'
 
 gem 'sass-rails', '~> 4.0.3'
 gem 'uglifier', '>= 1.3.0'

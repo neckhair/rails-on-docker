@@ -12,6 +12,8 @@ db:
     MYSQL_ROOT_PASSWORD: mypass
   ports:
     - "3306:3306"
+  links:
+    - dbdata
 dbdata:
   image: mysql:5.7.7
   command: /bin/echo mysql Data container

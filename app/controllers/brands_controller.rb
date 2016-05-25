@@ -64,10 +64,10 @@ class BrandsController < ApplicationController
   def brew
     @brand = Brand.find params[:brand_id]
 
-    BrewWorker.perform_async @brand.id, params[:bottles].to_i
+    BrewJob.perform_later @brand, params[:bottles].to_i
     flash[:notice] = "Brewing #{params[:bottles]} bottles of #{@brand.name}."
 
-    redirect_to :back
+    redirect_to brands_path
   end
 
   private

@@ -6,7 +6,7 @@ gem 'rails', '~> 4.2.0'
 gem 'mysql2'
 gem 'sqlite3'
 
-gem 'sidekiq', '~> 3.1.4'
+gem 'sidekiq', '~> 4.0'
 
 gem 'dalli'
 

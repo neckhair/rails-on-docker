@@ -5,4 +5,7 @@ Rails.application.routes.draw do
   resources :brands do
     patch :brew
   end
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

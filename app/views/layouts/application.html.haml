@@ -30,8 +30,8 @@
 
         %ul.left
           %li= link_to 'Inventory', brands_path
-          %li= link_to 'Kettles', kettles_path
           %li= link_to 'Log', brew_logs_path
+          %li= link_to 'Monitor', '/sidekiq', data: { no_turbolink: true }
     %section.row
       .large-12.columns
         - flash.each do |name, msg|

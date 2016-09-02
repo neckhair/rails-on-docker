@@ -1,39 +1,41 @@
-proxy:
-  image: jwilder/nginx-proxy:latest
-  ports:
-    - "80:80"
-  volumes:
-    - "/var/run/docker.sock:/tmp/docker.sock"
-db:
-  image: mysql:5.7.7
-  volumes:
-    - './data:/var/lib/mysql'
-  environment:
-    MYSQL_ROOT_PASSWORD: mypass
-redis:
-  image: redis
-cache:
-  image: memcached
-web:
-  build: .
-  command: bundle exec unicorn -E production -c config/unicorn.rb
-  environment:
-    SECRET_KEY_BASE: abcdefg
-    VIRTUAL_HOST: beer.docker
-    RAILS_ENV: production
-    MYSQL_ROOT_PASSWORD: mypass
-  links:
-    - db
-    - redis
-    - cache
-worker:
-  build: .
-  command: bundle exec sidekiq -e production -c 25
-  environment:
-    SECRET_KEY_BASE: abcdefg
-    RAILS_ENV: production
-    MYSQL_ROOT_PASSWORD: mypass
-  links:
-    - db
-    - redis
-    - cache
+version: '2'
+services:
+  proxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - "81:80"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock"
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD
+    volumes:
+      - './data:/var/lib/mysql'
+  redis:
+    image: redis
+  cache:
+    image: memcached
+  web:
+    build: .
+    command: bundle exec unicorn -E production -c config/unicorn.rb
+    environment:
+      - VIRTUAL_HOST=beer.docker
+      - MYSQL_ROOT_PASSWORD
+      - RAILS_ENV
+      - SECRET_KEY_BASE
+    links:
+      - db
+      - redis
+      - cache
+  worker:
+    build: .
+    command: bundle exec sidekiq -e production -c 25
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - RAILS_ENV
+      - SECRET_KEY_BASE
+    links:
+      - db
+      - redis
+      - cache

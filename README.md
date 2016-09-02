@@ -15,7 +15,6 @@ there is much room for improvement.
   * [x] Sidekiq container for background jobs
   * [x] Use Brightbox Ruby Packages instead of RVM
   * [x] Using Docker Compose for orchestration
-  * [x] Use [data volume containers](https://docs.docker.com/userguide/dockervolumes/) for Mysql data
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage
   * [ ] Kibana for log analysis
@@ -23,23 +22,14 @@ there is much room for improvement.
   * [ ] Replace MySQL with Postgres
 
 **Environment:**
-I am running this on a Mac using [docker-machine](https://docs.docker.com/machine/).
-
-Docker-Machine exposes all its ports on its IP address. This address is usually 192.168.59.103. It tells you
-its IP when you run `docker-machine env dev`. To make reaching the vm more comfortable and to use the virtual
-host feature I made an entry in my `/etc/hosts`:
-
-    192.168.99.100   beer.docker
-
-All services within the docker-machine VM are now reachable via beer.docker:<port> from my OS X command line.
+I am running this on a Mac using [Docker for Mac](https://docs.docker.com/docker-for-mac/).
 
 ## Quick Start
 
-First install docker-machine and the Docker command line tools. How this is done is very well documented
-all over the internet. Then start that whole stuff:
+First install Docker for Mac (Docker.app) and start it. How this is done is very well documented
+all over the internet. Then start prepare and start the app:
 
-    docker-machine start dev
-    eval "$(docker-machine env dev)"
+    docker-compose up -d db # needs some time to initialize, so we start it first
     docker-compose run web bundle exec rake db:setup
     docker-compose up
 

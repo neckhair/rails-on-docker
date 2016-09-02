@@ -6,17 +6,10 @@ proxy:
     - "/var/run/docker.sock:/tmp/docker.sock"
 db:
   image: mysql:5.7.7
-  volumes_from:
-    - dbdata
+  volumes:
+    - './data:/var/lib/mysql'
   environment:
     MYSQL_ROOT_PASSWORD: mypass
-  ports:
-    - "3306:3306"
-  links:
-    - dbdata
-dbdata:
-  image: mysql:5.7.7
-  command: /bin/echo mysql Data container
 redis:
   image: redis
 cache:
@@ -28,6 +21,7 @@ web:
     SECRET_KEY_BASE: abcdefg
     VIRTUAL_HOST: beer.docker
     RAILS_ENV: production
+    MYSQL_ROOT_PASSWORD: mypass
   links:
     - db
     - redis
@@ -38,6 +32,7 @@ worker:
   environment:
     SECRET_KEY_BASE: abcdefg
     RAILS_ENV: production
+    MYSQL_ROOT_PASSWORD: mypass
   links:
     - db
     - redis

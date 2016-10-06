@@ -16,7 +16,7 @@ cache:
   image: memcached
 web:
   build: .
-  command: bundle exec unicorn -E production -c config/unicorn.rb
+  command: bundle exec puma -C config/puma.rb
   environment:
     SECRET_KEY_BASE: abcdefg
     VIRTUAL_HOST: beer.docker

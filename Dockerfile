@@ -16,6 +16,8 @@ COPY Gemfile.lock /usr/app/
 RUN bundle install --without development test -j4
 
 COPY . /usr/app
+RUN chown -R nobody:nogroup /usr/app
+USER nobody
 
 ENV RAILS_ENV=production
 RUN bundle exec rake assets:precompile

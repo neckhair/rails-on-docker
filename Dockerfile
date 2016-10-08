@@ -1,22 +1,25 @@
 FROM alpine:3.4
 
-RUN apk update && apk upgrade && \
-    apk add curl-dev ruby-dev mysql-dev build-base && \
-    apk add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal tzdata && \
-    apk add nodejs && \
-    rm -rf /var/cache/apk/*
+ENV APP_DIR=/usr/app
 
-RUN mkdir -p /usr/app
-WORKDIR /usr/app
+RUN apk update && apk upgrade && \
+    apk add ruby ruby-io-console ruby-bundler ruby-irb ruby-bigdecimal tzdata mysql-dev && \
+    apk add nodejs
+    #rm -rf /var/cache/apk/*
+
+RUN mkdir -p $APP_DIR
+WORKDIR $APP_DIR
 
 # Cache bundle install
-COPY Gemfile /usr/app/
-COPY Gemfile.lock /usr/app/
+COPY Gemfile $APP_DIR/
+COPY Gemfile.lock $APP_DIR/
 
-RUN bundle install --without development test -j4
+RUN apk add --virtual build-dependencies curl-dev ruby-dev build-base && \
+    cd $APP_DIR; bundle install --without development test -j4 && \
+    apk del build-dependencies
 
-COPY . /usr/app
-RUN chown -R nobody:nogroup /usr/app
+COPY . $APP_DIR
+RUN chown -R nobody:nogroup $APP_DIR
 USER nobody
 
 ENV RAILS_ENV=production

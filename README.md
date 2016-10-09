@@ -13,7 +13,7 @@ Notice: These steps are not considered "best practice". They're just the steps w
   * [x] Sidekiq container for background jobs
   * [x] Use Brightbox Ruby Packages instead of RVM
   * [x] Using Docker Compose for orchestration
-  * [ ] Use Alpine Linux for the Rails container
+  * [x] Use Alpine Linux for the Rails container
   * [ ] Share secrets in environment files
   * [ ] Fluentd for log collection
   * [ ] Elasticsearch for log storage

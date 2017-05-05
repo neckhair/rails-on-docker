@@ -35,7 +35,7 @@ To later access the app in the browser open your `/etc/hosts` file with ~~vim~~ 
 Then prepare and start the app:
 
     docker-compose up -d db      # needs some time to initialize, so we start it first
-    docker-compose logs mysql    # use this to check if MySQL has finished starting
+    docker-compose logs db    # use this to check if db:mysql service  has finished starting
     docker-compose run web bundle exec rake db:setup # initialize the app's database
     docker-compose up            # start all services
 

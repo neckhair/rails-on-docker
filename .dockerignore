@@ -1,2 +1,5 @@
 data
 .bundle
+.git
+tmp/*
+log/*

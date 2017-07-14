@@ -13,7 +13,7 @@ production:
   adapter: mysql2
   pool: 5
   timeout: 5000
-  username: root
-  password: <%= ENV['DB_ENV_MYSQL_ROOT_PASSWORD'] %>
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV['MYSQL_PASSWORD'] %>
   host: 'db'
   database: beer_production

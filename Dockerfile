@@ -1,9 +1,10 @@
-FROM ruby:2.4-alpine
+FROM ruby:2.4
 
 ENV APP_DIR=/app
 
-RUN apk update  && \
-    apk add --no-cache tzdata mysql-dev mysql-client nodejs curl-dev ruby-dev build-base bash
+RUN apt-get update && \
+    apt-get install -y libmysqlclient-dev nodejs locales tzdata && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
@@ -13,8 +14,6 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test -j2
 
 COPY . $APP_DIR
-RUN chown -R nobody:nogroup $APP_DIR
-USER nobody
 
 RUN bundle exec rake assets:precompile
 

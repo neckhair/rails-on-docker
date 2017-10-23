@@ -15,5 +15,5 @@ production:
   timeout: 5000
   username: <%= ENV['MYSQL_USER'] %>
   password: <%= ENV['MYSQL_PASSWORD'] %>
-  host: 'db'
+  host: <%= ENV['MYSQL_HOST'] %>
   database: beer_production

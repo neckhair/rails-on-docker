@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # Wait for the database
-./docker/wait-for-it.sh db:3306 --timeout=30 --strict -- echo "Database is up!"
+./docker/wait-for-it.sh $MYSQL_HOST:3306 --timeout=60 --strict -- echo "Database is up!"
 
-export MYSQL_PWD=$MYSQL_PASSWORD
-if echo "select * from schema_migrations;" | mysql -h db -u$MYSQL_USER beer_production; then
+if bin/rake db:migrate:status > /dev/null; then
   echo "Database exists. Not initializing."
 else
   echo "Initializing database..."
   bin/rake db:setup
 fi
-unset $MYSQL_PWD
 
+bin/rake db:migrate
 exec bundle exec puma -C config/puma.rb

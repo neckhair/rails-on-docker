@@ -9,6 +9,7 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_HOST=db
       - RAILS_ENV=production
+      - MEMCACHED_HOST=cache
     depends_on:
       - db
       - redis
